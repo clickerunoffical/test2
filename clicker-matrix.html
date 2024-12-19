@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLICKER.MATRIX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg-color-hacker: #000000; /* Pure Black */
+            --text-color-hacker: #00FF00; /* Bright Green */
+            --card-bg-hacker: #002200; /* Dark Green */
+            --btn-hover-hacker: #004400; /* Slightly lighter green */
+        }
+
+        [data-theme="hacker"] {
+            --bg-color: var(--bg-color-hacker);
+            --text-color: var(--text-color-hacker);
+            --card-bg: var(--card-bg-hacker);
+            --btn-hover: var(--btn-hover-hacker);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: "Courier New", Courier, monospace; /* Hacker style font */
+        }
+
+        header {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 2px solid var(--text-color);
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 4px 8px rgba(0, 255, 0, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        .btn {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border: 1px solid var(--text-color);
+            border-radius: 4px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--btn-hover);
+            color: #FFFFFF;
+        }
+
+        footer {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            padding: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body data-theme="hacker">
+    <!-- Header -->
+    <header class="p-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold">Welcome to Clicker.Matrix’s Ethical Hacking Course!</h1>
+        <div class="flex gap-4">
+            <a href="upload.html" class="btn">Upload</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="p-4">
+        <section>
+            <h2 class="text-2xl font-bold mb-4">Uploaded Videos</h2>
+            <div id="videoGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Videos will be dynamically added here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; © 2024 Online Courses by Clicker.Matrix. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Load videos from localStorage and display them
+        const loadVideos = () => {
+            const videoGrid = document.getElementById('videoGrid');
+            const videos = JSON.parse(localStorage.getItem('uploadedVideos')) || [];
+
+            videos.forEach((video, index) => {
+                const videoElement = document.createElement('div');
+                videoElement.classList.add('card');
+                videoElement.innerHTML = `
+                    <a href="watch.html?id=${index}" class="block">
+                        <img src="${video.thumbnail}" alt="Thumbnail" class="w-full rounded-t-lg">
+                    </a>
+                    <h3 class="font-semibold mt-2">${video.title}</h3>
+                `;
+                videoGrid.appendChild(videoElement);
+            });
+        };
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', loadVideos);
+    </script>
+</body>
+</html>
+z

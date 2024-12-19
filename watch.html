@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLICKER.MATRIX Watch Video</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <style>
+        :root {
+            --bg-color-hacker: #000000;
+            --text-color-hacker: #00FF00;
+            --card-bg-hacker: #002200;
+            --btn-hover-hacker: #004400;
+        }
+
+        body {
+            background-color: var(--bg-color-hacker);
+            color: var(--text-color-hacker);
+            font-family: "Courier New", Courier, monospace;
+        }
+
+        header {
+            background-color: var(--card-bg-hacker);
+            color: var(--text-color-hacker);
+        }
+
+        .btn {
+            background-color: var(--card-bg-hacker);
+            color: var(--text-color-hacker);
+            padding: 8px 16px;
+            border: 1px solid var(--text-color-hacker);
+            border-radius: 4px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--btn-hover-hacker);
+            color: #FFFFFF;
+        }
+
+        footer {
+            background-color: var(--card-bg-hacker);
+            color: var(--text-color-hacker);
+            text-align: center;
+            padding: 12px;
+        }
+
+        select, option {
+            background-color: var(--card-bg-hacker);
+            color: var(--text-color-hacker);
+            border: 1px solid var(--text-color-hacker);
+            padding: 4px;
+        }
+
+        #videoContainer {
+            background-color: var(--card-bg-hacker);
+            border: 1px solid var(--text-color-hacker);
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        h2 {
+            color: var(--text-color-hacker);
+        }
+
+        #commentsSection {
+            background-color: var(--card-bg-hacker);
+            border: 1px solid var(--text-color-hacker);
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+
+        #commentsSection h3 {
+            margin-bottom: 8px;
+        }
+
+        #commentsSection p {
+            margin: 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="p-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold">CLICKER.MATRIX</h1>
+        <a href="index.html" class="btn">Home</a>
+    </header>
+
+    <!-- Video Section -->
+    <main class="p-4">
+        <section>
+            <div id="videoContainer" class="mb-4">
+                <div id="videoPlayer" class="w-full h-[600px] rounded-lg"></div>
+            </div>
+
+            <!-- Video Metadata Section -->
+            <div id="videoMetadata" class="mb-4">
+                <h2 id="videoTitle" class="text-2xl font-semibold">Video Title</h2>
+                <p id="videoDescription" class="mt-2">Description: <span>Loading...</span></p>
+                <div class="mt-4 text-lg">
+                    Views: <span id="viewCount">0</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4 mt-4">
+                <button id="likeButton" class="btn">Like (<span id="likeCount">0</span>)</button>
+                <button id="shareButton" class="btn">Share</button>
+
+                <div>
+                    <label for="playbackSpeed" class="font-medium">Speed:</label>
+                    <select id="playbackSpeed">
+                        <option value="0.5">0.5x</option>
+                        <option value="1" selected>1x</option>
+                        <option value="1.5">1.5x</option>
+                        <option value="2">2x</option>
+                    </select>
+                </div>
+
+                <button id="muteButton" class="btn">Mute</button>
+                <button id="fullscreenButton" class="btn">Fullscreen</button>
+            </div>
+
+            <div id="commentsSection">
+                <h3 class="text-xl font-bold">Comments</h3>
+                <p id="defaultComment">Course Instructions for Ethical Hacking:
+
+                    Legal and Ethical Compliance: Always adhere to legal and ethical guidelines. This course is designed for defensive purposes only, and any misuse of the knowledge shared is strictly prohibited.
+
+                    Set Up Your Environment: Ensure you have a secure, isolated lab environment. Do not perform testing on live systems without explicit permission.
+
+                    Follow Module Order: Complete each module in the suggested sequence to build your skills progressively. Skipping sections may cause confusion later.
+
+                    Ask Questions: Engage actively in discussions and reach out if you have questions. Collaboration fosters a better learning experience.
+
+                    Stay Updated: Cybersecurity is ever-evolving. Make time to follow industry news and trends as a complement to this course.
+
+                    Let’s maintain professionalism and use this knowledge responsibly to enhance cybersecurity practices worldwide!</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; © 2024 Online Courses by Clicker.Matrix. All rights reserved</p>
+    </footer>
+
+    <script>
+        let player;
+        let muted = false;
+        let viewsCounted = false;
+
+        const videoId = new URLSearchParams(window.location.search).get('id');
+        const videos = JSON.parse(localStorage.getItem('uploadedVideos')) || [];
+        const videoData = videos[videoId];
+
+        if (videoData) {
+            document.getElementById('videoTitle').textContent = videoData.title;
+            document.getElementById('videoDescription').innerHTML = `Description: <span>${videoData.description || 'No description available'}</span>`;
+
+            function onYouTubeIframeAPIReady() {
+                player = new YT.Player('videoPlayer', {
+                    height: '600',
+                    width: '100%',
+                    videoId: extractVideoID(videoData.url),
+                    playerVars: {
+                        autoplay: 0,
+                        controls: 1
+                    },
+                    events: {
+                        onReady: onPlayerReady
+                    }
+                });
+            }
+
+            function extractVideoID(url) {
+                const match = url.match(/(?:https?:\/\/)?(?:www\.)?youtu(?:\.be\/|be\.com\/(?:watch\?v=|embed\/|v\/|.+\?v=))([^&\n?#]+)/);
+                return match ? match[1] : null;
+            }
+
+            function onPlayerReady(event) {
+                setupUIControls();
+
+                document.body.addEventListener('touchstart', () => {
+                    if (!viewsCounted) {
+                        player.playVideo();
+                        incrementViewCount();
+                        viewsCounted = true;
+                    }
+                }, { once: true });
+            }
+        } else {
+            alert("Video not found!");
+        }
+
+        function setupUIControls() {
+            const likeButton = document.getElementById('likeButton');
+            const likeCount = document.getElementById('likeCount');
+            const playbackSpeed = document.getElementById('playbackSpeed');
+            const muteButton = document.getElementById('muteButton');
+            const fullscreenButton = document.getElementById('fullscreenButton');
+            const viewCount = document.getElementById('viewCount');
+
+            let likes = parseInt(localStorage.getItem(`likes_${videoId}`)) || getRandomLikes();
+            let views = parseInt(localStorage.getItem(`views_${videoId}`)) || getRandomViews();
+
+            likeCount.textContent = likes;
+            viewCount.textContent = views;
+
+            likeButton.addEventListener('click', () => {
+                likes++;
+                likeCount.textContent = likes;
+                localStorage.setItem(`likes_${videoId}`, likes);
+            });
+
+            playbackSpeed.addEventListener('change', (e) => {
+                player.setPlaybackRate(parseFloat(e.target.value));
+            });
+
+            muteButton.addEventListener('click', () => {
+                if (muted) {
+                    player.unMute();
+                    muteButton.textContent = "Mute";
+                } else {
+                    player.mute();
+                    muteButton.textContent = "Unmute";
+                }
+                muted = !muted;
+            });
+
+            fullscreenButton.addEventListener('click', () => {
+                const iframe = document.querySelector('#videoPlayer iframe');
+                if (iframe.requestFullscreen) {
+                    iframe.requestFullscreen();
+                } else if (iframe.webkitRequestFullscreen) {
+                    iframe.webkitRequestFullscreen();
+                } else if (iframe.msRequestFullscreen) {
+                    iframe.msRequestFullscreen();
+                }
+            });
+        }
+
+        function incrementViewCount() {
+            let views = parseInt(localStorage.getItem(`views_${videoId}`)) || getRandomViews();
+            views++;
+            localStorage.setItem(`views_${videoId}`, views);
+            document.getElementById('viewCount').textContent = views;
+        }
+
+        function getRandomViews() {
+            const randomViews = Math.floor(Math.random() * (22000 - 20000 + 1)) + 20000;
+            localStorage.setItem(`views_${videoId}`, randomViews);
+            return randomViews;
+        }
+
+        function getRandomLikes() {
+            const randomLikes = Math.floor(Math.random() * (14000 - 13000 + 1)) + 13000;
+            localStorage.setItem(`likes_${videoId}`, randomLikes);
+            return randomLikes;
+        }
+
+        if (typeof YT === "undefined" || typeof YT.Player === "undefined") {
+            const script = document.createElement("script");
+            script.src = "https://www.youtube.com/iframe_api";
+            document.head.appendChild(script);
+        } else {
+            onYouTubeIframeAPIReady();
+        }
+    </script>
+</body>
+</html>

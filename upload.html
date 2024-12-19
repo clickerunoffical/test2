@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLICKER Upload Video</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg-color-hacker: #000000; /* Pure Black */
+            --text-color-hacker: #00FF00; /* Bright Green */
+            --card-bg-hacker: #002200; /* Dark Green */
+            --btn-hover-hacker: #004400; /* Slightly lighter green */
+        }
+
+        body {
+            background-color: var(--bg-color-hacker);
+            color: var(--text-color-hacker);
+            font-family: "Courier New", Courier, monospace; /* Hacker style font */
+        }
+
+        header {
+            background-color: var(--card-bg-hacker);
+            color: var(--text-color-hacker);
+        }
+
+        .btn {
+            background-color: var(--card-bg-hacker);
+            color: var(--text-color-hacker);
+            padding: 8px 16px;
+            border: 1px solid var(--text-color-hacker);
+            border-radius: 4px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--btn-hover-hacker);
+            color: #FFFFFF;
+        }
+
+        footer {
+            background-color: var(--card-bg-hacker);
+            color: var(--text-color-hacker);
+            text-align: center;
+            padding: 12px;
+        }
+
+        input, textarea, select {
+            background-color: var(--card-bg-hacker);
+            color: var(--text-color-hacker);
+            border: 1px solid var(--text-color-hacker);
+            border-radius: 4px;
+            padding: 8px;
+            width: 100%;
+        }
+
+        label {
+            color: var(--text-color-hacker);
+        }
+
+        section {
+            background-color: var(--card-bg-hacker);
+            border: 1px solid var(--text-color-hacker);
+            padding: 16px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="p-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold">CLICKER</h1>
+        <a href="index.html" class="btn">Home</a>
+    </header>
+
+    <!-- Upload Section -->
+    <main class="p-4">
+        <section>
+            <h2 class="text-2xl font-semibold mb-4">Upload Your Video</h2>
+
+            <form id="uploadForm" class="space-y-4">
+                <div>
+                    <label for="password">Password</label>
+                    <input id="password" type="password" placeholder="Enter password" required>
+                </div>
+
+                <div>
+                    <label for="videoTitle">Video Title</label>
+                    <input id="videoTitle" type="text" placeholder="Enter video title" required>
+                </div>
+
+                <div>
+                    <label for="videoDescription">Video Description</label>
+                    <textarea id="videoDescription" placeholder="Enter video description" rows="4" required></textarea>
+                </div>
+
+                <div>
+                    <label for="videoURL">Video URL</label>
+                    <input id="videoURL" type="url" placeholder="Enter YouTube video URL" required>
+                </div>
+
+                <div>
+                    <label for="videoThumbnail">Thumbnail</label>
+                    <input id="videoThumbnail" type="file" accept="image/*" required>
+                </div>
+
+                <button type="submit" class="btn">Upload</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; © 2024 Online Courses by Clicker.Matrix. All rights reserved</p>
+    </footer>
+
+    <script>
+        const uploadForm = document.getElementById('uploadForm');
+
+        uploadForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const password = document.getElementById('password').value.trim();
+            const title = document.getElementById('videoTitle').value.trim();
+            const description = document.getElementById('videoDescription').value.trim();
+            const url = document.getElementById('videoURL').value.trim();
+            const thumbnail = document.getElementById('videoThumbnail').files[0];
+
+            if (password !== 'ARVIMATRIX') {
+                alert('Incorrect password. Access denied.');
+                return;
+            }
+
+            if (title && description && url && thumbnail) {
+                const reader = new FileReader();
+
+                reader.onload = function () {
+                    const videos = JSON.parse(localStorage.getItem('uploadedVideos')) || [];
+                    videos.push({ title, description, url, thumbnail: reader.result });
+                    localStorage.setItem('uploadedVideos', JSON.stringify(videos));
+
+                    alert('Video uploaded successfully!');
+                    uploadForm.reset();
+                };
+
+                reader.readAsDataURL(thumbnail);
+            } else {
+                alert('Please fill in all fields.');
+            }
+        });
+    </script>
+</body>
+</html>
